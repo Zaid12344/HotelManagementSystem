@@ -1,0 +1,284 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* ---------- Skeleton Loading ---------- */
+.skeleton-card {
+    height: 78px;
+    border-radius: 6px;
+    background: linear-gradient( 90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75% );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Optional: prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-card {
+        animation: none;
+        background: #ececec;
+    }
+}
+
+#roomList, #roomSkeleton {
+    transition: opacity 0.15s ease-in-out;
+}
+
+/* ---------- KPI Cards ---------- */
+.kpi-card {
+    background: #fff;
+    border: 1px solid #eef0f3;
+    border-radius: 14px;
+    padding: 20px 22px;
+    height: 100%;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+    .kpi-card:hover {
+        box-shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+        transform: translateY(-1px);
+    }
+
+.kpi-label {
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+}
+
+.kpi-trend {
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+    .kpi-trend.up {
+        color: #16a34a;
+    }
+
+    .kpi-trend.down {
+        color: #dc2626;
+    }
+
+    .kpi-trend.neutral {
+        color: #9ca3af;
+    }
+
+.kpi-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.kpi-icon-purple {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.kpi-icon-green {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.kpi-icon-amber {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.kpi-icon-blue {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.kpi-icon-red {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.kpi-icon-gray {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+/* ============================================
+   Status Badge System — Unified Color Palette
+   ============================================ */
+
+.badge-status {
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.01em;
+    display: inline-block;
+    line-height: 1.2;
+}
+
+/* ----- Success (green) ----- */
+.badge-status-success {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* ----- Danger (red) ----- */
+.badge-status-danger {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* ----- Warning (amber) ----- */
+.badge-status-warning {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+/* ----- Info (blue) ----- */
+.badge-status-info {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+/* ----- Neutral (gray) ----- */
+.badge-status-neutral {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+/* ----- Purple (brand) ----- */
+.badge-status-purple {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+/* ---------- Toast Notifications ---------- */
+.toast-container {
+    pointer-events: none;
+}
+
+    .toast-container .toast {
+        pointer-events: auto;
+        min-width: 320px;
+        max-width: 420px;
+        border-radius: 10px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        animation: toast-slide-in 0.25s ease-out;
+    }
+
+@keyframes toast-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.toast-container .toast .btn-close {
+    opacity: 0.6;
+}
+
+    .toast-container .toast .btn-close:hover {
+        opacity: 1;
+    }
+
+/* Mobile: full-width toasts at top */
+@media (max-width: 576px) {
+    .toast-container {
+        left: 0;
+        right: 0;
+        padding: 10px;
+    }
+
+        .toast-container .toast {
+            min-width: auto;
+            width: 100%;
+            max-width: 100%;
+        }
+}
+
+/* ---------- Navbar Active State ---------- */
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #ffffff;
+    font-weight: 600;
+    position: relative;
+}
+
+    /* Underline indicator */
+    .navbar-dark .navbar-nav .nav-link.active::after {
+        content: '';
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        bottom: -2px;
+        height: 2px;
+        background: #a78bfa; /* light purple accent */
+        border-radius: 2px;
+    }
+
+.navbar-dark .navbar-nav .nav-link {
+    transition: color 0.15s ease;
+}
+
+    .navbar-dark .navbar-nav .nav-link:hover {
+        color: #e9d5ff; /* light purple on hover */
+    }
