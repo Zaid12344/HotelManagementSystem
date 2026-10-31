@@ -1,0 +1,73 @@
+﻿@model HotelManagement.Models.ViewModels.RoomDashboardViewModel
+@using HotelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Room Dashboard";
+}
+@using HotelManagement.Models.Helpers
+
+
+<h2 class="mb-3">📊 Room Dashboard</h2>
+
+@using HotelManagement.Models.Helpers
+
+<div class="row g-3 mb-4">
+
+    <!-- Total Rooms -->
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Total Rooms</div>
+                    <div class="kpi-value">@Model.TotalRooms</div>
+                    <div class="kpi-trend neutral">All rooms</div>
+                </div>
+                <div class="kpi-icon kpi-icon-purple">🏨</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Cards -->
+    @foreach (RoomStatus status in Enum.GetValues(typeof(RoomStatus)))
+    {
+        var count = Model.StatusCounts.ContainsKey(status) ? Model.StatusCounts[status] : 0;
+
+        var icon = status switch
+        {
+            RoomStatus.Available   => "✅",
+            RoomStatus.Occupied    => "🔴",
+            RoomStatus.Reserved    => "🟡",
+            RoomStatus.Cleaning    => "🧹",
+            RoomStatus.Maintenance => "🔧",
+            _ => "📊"
+        };
+
+        var badgeClass = status switch
+        {
+            RoomStatus.Available   => "badge-status badge-status-success",
+            RoomStatus.Occupied    => "badge-status badge-status-danger",
+            RoomStatus.Reserved    => "badge-status badge-status-warning",
+            RoomStatus.Cleaning    => "badge-status badge-status-info",
+            RoomStatus.Maintenance => "badge-status badge-status-neutral",
+            _ => "badge-status badge-status-neutral"
+        };
+
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="kpi-label">@status</div>
+                        <div class="kpi-value">@count</div>
+                        <span class="@badgeClass">@status</span>
+                    </div>
+                    <div class="kpi-icon @(
+                        status == RoomStatus.Available ? "kpi-icon-green" :
+                        status == RoomStatus.Occupied ? "kpi-icon-red" :
+                        status == RoomStatus.Reserved ? "kpi-icon-amber" :
+                        status == RoomStatus.Cleaning ? "kpi-icon-blue" :
+                        "kpi-icon-gray"
+                    )">@icon</div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

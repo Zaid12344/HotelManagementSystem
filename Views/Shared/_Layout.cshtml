@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] != null ? $"{ViewData["Title"]} · HotelManagement" : "HotelManagement")</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HotelManagement.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="~/apple-touch-icon.png" />
+</head>
+<body>
+    <header>
+       <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+    <div class="container-fluid">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+            🏨 HotelManagement
+        </a>
+
+        @* ----- Hamburger toggle button (for mobile) ----- *@
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        @* ----- Collapsible section ----- *@
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            @{
+    var activeController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var activeAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+}
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <li class="nav-item">
+            <a class="nav-link @(activeController == "Home" ? "active" : "")"
+               asp-controller="Home" asp-action="Index">Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeController == "Room" && activeAction == "Index" ? "active" : "")"
+               asp-controller="Room" asp-action="Index">Rooms</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeController == "Room" && activeAction == "Dashboard" ? "active" : "")"
+               asp-controller="Room" asp-action="Dashboard">Room Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeController == "Reservation" ? "active" : "")"
+               asp-controller="Reservation" asp-action="Index">Reservations</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeController == "CheckInOut" ? "active" : "")"
+               asp-controller="CheckInOut" asp-action="Index">Front Desk</a>
+        </li>
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Housekeeping"))
+        {
+            <li class="nav-item">
+                <a class="nav-link @(activeController == "Housekeeping" ? "active" : "")"
+                   asp-controller="Housekeeping" asp-action="Index">Housekeeping</a>
+            </li>
+        }
+
+        <li class="nav-item">
+            <a class="nav-link @(activeController == "Maintenance" ? "active" : "")"
+               asp-controller="Maintenance" asp-action="Index">Maintenance</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeController == "Service" ? "active" : "")"
+               asp-controller="Service" asp-action="Index">Services</a>
+        </li>
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+        {
+            <li class="nav-item">
+                <a class="nav-link @(activeController == "Notifications" ? "active" : "")"
+                   asp-controller="Notifications" asp-action="Index">Notifications</a>
+            </li>
+        }
+
+        @if (User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a class="nav-link @(activeController == "Users" ? "active" : "")"
+                   asp-controller="Users" asp-action="Index">Users</a>
+            </li>
+        }
+    }
+</ul>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    // ----- Role label -----
+                    var roleLabel = "User";
+                    if (User.IsInRole("Admin")) roleLabel = "Admin";
+                    else if (User.IsInRole("Manager")) roleLabel = "Manager";
+                    else if (User.IsInRole("FrontDesk")) roleLabel = "Front Desk";
+                    else if (User.IsInRole("Housekeeping")) roleLabel = "Housekeeping";
+                    else if (User.IsInRole("Accountant")) roleLabel = "Accountant";
+
+                    // ----- Role badge class -----
+                    string roleBadgeClass = "badge-status badge-status-neutral";
+                    if (User.IsInRole("Admin")) roleBadgeClass = "badge-status badge-status-purple";
+                    else if (User.IsInRole("Manager")) roleBadgeClass = "badge-status badge-status-info";
+                    else if (User.IsInRole("FrontDesk")) roleBadgeClass = "badge-status badge-status-success";
+                    else if (User.IsInRole("Housekeeping")) roleBadgeClass = "badge-status badge-status-warning";
+                    else if (User.IsInRole("Accountant")) roleBadgeClass = "badge-status badge-status-info";
+
+                    <li class="nav-item d-flex align-items-center">
+                        <span class="navbar-text text-light me-lg-2 d-flex align-items-center gap-2">
+                            <span class="@roleBadgeClass">@roleLabel</span>
+                            <span>@User.Identity.Name</span>
+                        </span>
+                    </li>
+
+                    <li class="nav-item">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-light">Logout</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
+    </header>
+
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-4">
+        <div class="container-fluid py-2">
+            <small>&copy; @DateTime.Now.Year - HotelManagement · Demo Project</small>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+    // Initialize and show all toasts on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        const toasts = document.querySelectorAll('.toast');
+        toasts.forEach(function (toastEl) {
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        });
+    });
+</script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

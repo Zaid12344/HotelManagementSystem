@@ -1,0 +1,101 @@
+﻿@model List<HotelManagement.Models.ViewModels.ReservationListViewModel>
+@using HotelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Reservations";
+    var filter = ViewBag.Filter as string ?? "all";
+}
+ @using HotelManagement.Models.Helpers
+
+<partial name="_Alerts" />
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📅 Reservations</h2>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("FrontDesk"))
+    {
+        <a asp-action="Create" class="btn btn-success">+ New Reservation</a>
+    }
+</div>
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var f in new[] { "all", "arrivals", "departures", "inhouse", "upcoming" })
+    {
+        var label = f switch
+        {
+            "arrivals" => "Today's Arrivals",
+            "departures" => "Today's Departures",
+            "inhouse" => "In-House",
+            "upcoming" => "Upcoming",
+            _ => "All"
+        };
+        <li class="nav-item">
+            <a class="nav-link @(filter == f ? "active" : "")"
+               asp-action="Index" asp-route-filter="@f">@label</a>
+        </li>
+    }
+</ul>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="card-body">
+            <partial name="_EmptyState"
+                     model="@((
+                         "📅",
+                         "No reservations found",
+                         filter == "all"
+                             ? "Create your first booking to get started."
+                             : "No reservations match this filter.",
+                         "Create Reservation",
+                         Url.Action("Create", "Reservation")!
+                     ))" />
+        </div>
+    </div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Reference</th>
+                <th>Guest</th>
+                <th>Rooms</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Nights</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th class="text-end">Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+               
+                <tr>
+                    <td><strong>@r.BookingReference</strong></td>
+                    <td>
+                        @r.GuestName<br />
+                        <small class="text-muted">@r.GuestPhone</small>
+                    </td>
+                    <td>@r.RoomsText</td>
+                    <td>@r.CheckInDate.ToString("dd MMM yyyy")</td>
+                    <td>@r.CheckOutDate.ToString("dd MMM yyyy")</td>
+                    <td>@r.Nights</td>
+                    <td>@r.Source</td>
+                    <td><span class="@BadgeHelper.ReservationStatus(r.Status)">@r.Status</span></td>
+                    <td class="text-end">
+                        ₹@r.TotalAmount.ToString("N0")
+                        @if (r.DepositAmount > 0)
+                        {
+                            <br /><small class="text-muted">Dep: ₹@r.DepositAmount.ToString("N0")</small>
+                        }
+                    </td>
+                    <td class="text-end">
+                        <a asp-action="Details" asp-route-id="@r.Id"
+                           class="btn btn-sm btn-outline-secondary">View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,71 @@
+﻿@model List<HotelManagement.Models.ViewModels.RoomListViewModel>
+@using HotelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Rooms";
+}
+  @using HotelManagement.Models.Helpers
+
+<partial name="_Alerts" />
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🛏️ Room Management</h2>
+    <div>
+        <a asp-action="Dashboard" class="btn btn-outline-primary">📊 Dashboard</a>
+        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+        {
+            <a asp-action="Create" class="btn btn-success">+ New Room</a>
+        }
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <partial name="_EmptyState"
+    model="@((
+                 "🛏️",
+                 "No rooms yet",
+                 "Start by adding your first room to begin accepting bookings.",
+                 "+ Add Room",
+                 Url.Action("Create", "Room")!
+             ))" />
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Room #</th>
+                <th>Floor</th>
+                <th>Type</th>
+                <th>Rate</th>
+                <th>Status</th>
+                <th>Amenities</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in Model)
+            {
+                <tr>
+                    <td><strong>@room.RoomNumber</strong></td>
+                    <td>@room.Floor</td>
+                    <td>@room.Type</td>
+                    <td>₹@room.Rate.ToString("N0")</td>
+                    <td>
+                      
+                        
+            <span class="@BadgeHelper.RoomStatus(room.Status)">@room.Status</span>
+                    </td>
+                    <td><small>@room.Amenities</small></td>
+                    <td class="text-end">
+                        <a asp-action="Details" asp-route-id="@room.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@room.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

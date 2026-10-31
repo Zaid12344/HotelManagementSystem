@@ -1,0 +1,72 @@
+﻿@* ============================================
+   Toast Notification Container
+   Renders all TempData alerts as floating toasts
+   ============================================ *@
+
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090; margin-top: 70px;">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="toast align-items-center border-0 shadow" role="alert"
+             data-bs-autohide="true" data-bs-delay="4000"
+             style="background: #dcfce7; color: #15803d;">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <span style="font-size:1.2rem;">✅</span>
+                    <span>@TempData["Success"]</span>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                        style="filter: invert(30%) sepia(50%) saturate(500%) hue-rotate(80deg);"></button>
+            </div>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="toast align-items-center border-0 shadow" role="alert"
+             data-bs-autohide="true" data-bs-delay="5000"
+             style="background: #fee2e2; color: #b91c1c;">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <span style="font-size:1.2rem;">❌</span>
+                    <span>@TempData["Error"]</span>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                        style="filter: invert(20%) sepia(60%) saturate(700%) hue-rotate(340deg);"></button>
+            </div>
+        </div>
+    }
+
+    @if (TempData["Info"] != null)
+    {
+        <div class="toast align-items-center border-0 shadow" role="alert"
+             data-bs-autohide="true" data-bs-delay="4000"
+             style="background: #dbeafe; color: #1d4ed8;">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <span style="font-size:1.2rem;">ℹ️</span>
+                    <span>@TempData["Info"]</span>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                        style="filter: invert(30%) sepia(50%) saturate(700%) hue-rotate(200deg);"></button>
+            </div>
+        </div>
+    }
+
+    @if (TempData["Warning"] != null)
+    {
+        <div class="toast align-items-center border-0 shadow" role="alert"
+             data-bs-autohide="true" data-bs-delay="5000"
+             style="background: #fef3c7; color: #b45309;">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <span style="font-size:1.2rem;">⚠️</span>
+                    <span>@TempData["Warning"]</span>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                        style="filter: invert(40%) sepia(50%) saturate(800%) hue-rotate(20deg);"></button>
+            </div>
+        </div>
+    }
+
+</div>

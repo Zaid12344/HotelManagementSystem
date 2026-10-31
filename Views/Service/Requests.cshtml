@@ -1,0 +1,99 @@
+﻿@model List<HotelManagement.Models.ViewModels.ServiceRequestsListViewModel>
+@using HotelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Service Requests";
+    var filter = ViewBag.Filter as string ?? "all";
+}
+@using HotelManagement.Models.Helpers
+
+<partial name="_Alerts" />
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📋 Service Requests</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">Service Catalog</a>
+</div>
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var f in new[] { "all", "open", "today", "fulfilled" })
+    {
+        var label = f switch
+        {
+            "open"      => "Open",
+            "today"     => "Today",
+            "fulfilled" => "Fulfilled",
+            _           => "All"
+        };
+        <li class="nav-item">
+            <a class="nav-link @(filter == f ? "active" : "")" asp-action="Requests" asp-route-filter="@f">@label</a>
+        </li>
+    }
+</ul>
+
+@if (!Model.Any())
+{
+     <div class="card">
+        <div class="card-body">
+            <partial name="_EmptyState"
+                     model="@((
+                         "📋",
+                         "No service requests",
+                         filter == "all"
+                             ? "Service requests from guests and Front Desk will appear here."
+                             : "No requests match this filter.",
+                         (string?)null,
+                         (string?)null
+                     ))" />
+        </div>
+    </div>    
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>When</th><th>Service</th><th>Booking</th><th>Guest</th><th>Room</th>
+                <th>Qty</th><th>Total</th><th>Status</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                
+                <tr>
+                    <td>@r.RequestedAt.ToString("dd MMM HH:mm")</td>
+                    <td>
+                        <strong>@r.ServiceName</strong><br />
+                        <small class="text-muted">@r.Category</small>
+                    </td>
+                    <td>@r.BookingReference</td>
+                    <td>@r.GuestName</td>
+                    <td>@(r.RoomNumber ?? "—")</td>
+                    <td>@r.Quantity</td>
+                    <td>₹@r.TotalPrice.ToString("N0")</td>
+                    <td>
+                        <span class="@BadgeHelper.ServiceRequestStatus(r.Status)">@r.Status</span>
+
+                        @if (r.PostedToFolio)
+                        {
+                            <br /><small class="text-success">Posted to folio</small>
+                        }
+                    </td>
+                    <td class="text-end">
+                        @if (r.Status == ServiceRequestStatus.Requested || r.Status == ServiceRequestStatus.InProgress)
+                        {
+                            <form asp-action="FulfillRequest" asp-route-id="@r.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-sm btn-success">✔ Fulfill & Post</button>
+                            </form>
+                            <form asp-action="CancelRequest" asp-route-id="@r.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Cancel this request?');">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-sm btn-outline-danger">✖</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,11 @@
+﻿@model (string Icon, string Title, string Message, string? ActionText, string? ActionUrl)
+
+<div class="text-center py-5 text-muted">
+    <div style="font-size:3rem;">@Model.Icon</div>
+    <h5 class="mt-2">@Model.Title</h5>
+    <p class="mb-3">@Model.Message</p>
+    @if (!string.IsNullOrEmpty(Model.ActionText) && !string.IsNullOrEmpty(Model.ActionUrl))
+    {
+        <a href="@Model.ActionUrl" class="btn btn-sm btn-primary">@Model.ActionText</a>
+    }
+</div>

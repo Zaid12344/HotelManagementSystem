@@ -1,0 +1,49 @@
+﻿@model HotelManagement.Models.ViewModels.RoomFormViewModel
+@{
+    ViewData["Title"] = "New Room";
+}
+
+<h2>➕ New Room</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="RoomNumber" class="form-label"></label>
+                <input asp-for="RoomNumber" class="form-control" />
+                <span asp-validation-for="RoomNumber" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Type" class="form-label"></label>
+                <select asp-for="Type" asp-items="Html.GetEnumSelectList<HotelManagement.Models.Enums.RoomType>()" class="form-select"></select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Rate" class="form-label"></label>
+                <input asp-for="Rate" class="form-control" />
+                <span asp-validation-for="Rate" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Floor" class="form-label"></label>
+                <input asp-for="Floor" class="form-control" />
+                <span asp-validation-for="Floor" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Amenities" class="form-label"></label>
+                <input asp-for="Amenities" class="form-control" placeholder="WiFi, AC, TV" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" asp-items="Html.GetEnumSelectList<HotelManagement.Models.Enums.RoomStatus>()" class="form-select"></select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

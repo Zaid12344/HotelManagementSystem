@@ -1,0 +1,47 @@
+﻿@model HotelManagement.Models.Entities.Room
+@{
+    ViewData["Title"] = "Room Details";
+}
+
+<h2>🛏️ Room @Model.RoomNumber</h2>
+
+<div class="card" style="max-width:500px;">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Room Number</dt>
+            <dd class="col-sm-8">@Model.RoomNumber</dd>
+
+            <dt class="col-sm-4">Type</dt>
+            <dd class="col-sm-8">@Model.Type</dd>
+
+            <dt class="col-sm-4">Floor</dt>
+            <dd class="col-sm-8">@Model.Floor</dd>
+
+            <dt class="col-sm-4">Rate / Night</dt>
+            <dd class="col-sm-8">₹@Model.Rate.ToString("N0")</dd>
+
+            <dt class="col-sm-4">Status</dt>
+            <dd class="col-sm-8">@Model.Status</dd>
+
+            <dt class="col-sm-4">Amenities</dt>
+            <dd class="col-sm-8">@Model.Amenities</dd>
+
+            <dt class="col-sm-4">Created</dt>
+            <dd class="col-sm-8">@Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</dd>
+
+            @if (Model.UpdatedAt.HasValue)
+            {
+                <dt class="col-sm-4">Last Updated</dt>
+                <dd class="col-sm-8">@Model.UpdatedAt.Value.ToString("dd MMM yyyy HH:mm")</dd>
+            }
+        </dl>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    }
+</div>
