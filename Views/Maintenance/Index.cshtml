@@ -1,0 +1,66 @@
+﻿@model List<HotelManagement.Models.ViewModels.MaintenanceListViewModel>
+@using HotelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Maintenance";
+}
+
+@using HotelManagement.Models.Helpers
+
+<partial name="_Alerts" />
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🔧 Maintenance</h2>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("FrontDesk") || User.IsInRole("Housekeeping"))
+    {
+        <a asp-action="Create" class="btn btn-success">+ Report Issue</a>
+    }
+</div>
+
+@if(!Model.Any()){
+   <div class="card">
+        <div class="card-body">
+            <partial name="_EmptyState"
+                     model="@((
+                         "🔧",
+                         "No maintenance requests",
+                         "Everything is running smoothly! Report an issue if something needs attention.",
+                         "+ Report Issue",
+                         Url.Action("Create", "Maintenance")!
+                     ))" />
+</div>
+    </div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Room</th>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Reported</th>
+                <th>By</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td><strong>@r.RoomNumber</strong></td>
+                    <td>@r.Title</td>
+                    <td><span class="@BadgeHelper.MaintenancePriority(r.Priority)">@r.Priority</span>
+</td>
+                    <td><span class="@BadgeHelper.MaintenanceStatus(r.Status)">@r.Status</span>
+</td>
+                    <td>@r.CreatedAt.ToString("dd MMM HH:mm")</td>
+                    <td>@(r.ReportedByName ?? "—")</td>
+                    <td class="text-end">
+                        <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

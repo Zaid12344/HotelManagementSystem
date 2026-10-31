@@ -1,0 +1,85 @@
+﻿@model HotelManagement.Models.ViewModels.MaintenanceListViewModel
+@using HotelManagement.Models.Enums
+@using HotelManagement.Models.Helpers
+@{
+    ViewData["Title"] = "Maintenance Details";
+}
+
+<partial name="_Alerts" />
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🔧 @Model.Title</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Back</a>
+</div>
+
+<div class="card border-0 shadow-sm mb-3" style="max-width:700px;">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Room</dt>
+            <dd class="col-sm-9"><strong>@Model.RoomNumber</strong></dd>
+
+            <dt class="col-sm-3">Priority</dt>
+            <dd class="col-sm-9">
+                <span class="@BadgeHelper.MaintenancePriority(Model.Priority)">@Model.Priority</span>
+            </dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">
+                <span class="@BadgeHelper.MaintenanceStatus(Model.Status)">@Model.Status</span>
+            </dd>
+
+            <dt class="col-sm-3">Reported</dt>
+            <dd class="col-sm-9">
+                @Model.CreatedAt.ToString("dd MMM yyyy HH:mm")
+                @if (!string.IsNullOrEmpty(Model.ReportedByName))
+                {
+                    <text>by @Model.ReportedByName</text>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+
+            @if (Model.ResolvedAt.HasValue)
+            {
+                <dt class="col-sm-3">Resolved</dt>
+                <dd class="col-sm-9">@Model.ResolvedAt.Value.ToString("dd MMM yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Resolution</dt>
+                <dd class="col-sm-9">@Model.ResolutionNotes</dd>
+            }
+        </dl>
+    </div>
+</div>
+
+@if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Housekeeping"))
+{
+    @if (Model.Status != MaintenanceStatus.Resolved)
+    {
+        <div class="card border-0 shadow-sm mb-3" style="max-width:700px;">
+            <div class="card-header bg-white border-bottom">
+                <strong>Update Status</strong>
+            </div>
+            <div class="card-body">
+                <form asp-action="UpdateStatus" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label">New Status</label>
+                        <select name="status" class="form-select">
+                            <option value="@MaintenanceStatus.Open">Open</option>
+                            <option value="@MaintenanceStatus.InProgress">In Progress</option>
+                            <option value="@MaintenanceStatus.Resolved">Resolved</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Resolution Notes (required when resolving)</label>
+                        <textarea name="resolutionNotes" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    }
+}

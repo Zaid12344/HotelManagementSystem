@@ -1,0 +1,412 @@
+﻿@model HotelManagement.Models.ViewModels.HomeDashboardViewModel
+@{ ViewData["Title"] = "Dashboard"; }
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0">🏨 Dashboard</h2>
+        <small class="text-muted">@DateTime.Now.ToString("dddd, dd MMM yyyy HH:mm")</small>
+    </div>
+</div>
+
+<!-- ═══════════ PRIMARY KPIs ═══════════ -->
+<div class="row g-3 mb-4">
+
+    <!-- Occupancy -->
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Occupancy</div>
+                    <div class="kpi-value">@Model.OccupancyPercent.ToString("0.#")%</div>
+                    <div class="kpi-trend neutral">
+                        @Model.OccupiedRooms / @(Model.TotalRooms - Model.MaintenanceRooms) sellable
+                    </div>
+                </div>
+                <div class="kpi-icon kpi-icon-purple">📊</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Today -->
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Revenue Today</div>
+                    <div class="kpi-value">₹@Model.RevenueToday.ToString("N0")</div>
+                    <div class="kpi-trend @(Model.RevenueChangePercent >= 0 ? "up" : "down")">
+                        @if (Model.RevenueChangePercent >= 0)
+                        {
+                            <span>▲</span>
+                        }
+                        else
+                        {
+                            <span>▼</span>
+                        }
+                        @Math.Abs(Model.RevenueChangePercent).ToString("0.#")% vs yesterday
+                    </div>
+                </div>
+                <div class="kpi-icon kpi-icon-green">💰</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Outstanding -->
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Outstanding</div>
+                    <div class="kpi-value">₹@Model.OutstandingBalance.ToString("N0")</div>
+                    <div class="kpi-trend neutral">
+                        Open folios with balance
+                    </div>
+                </div>
+                <div class="kpi-icon kpi-icon-amber">⚠️</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- In-House -->
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">In-House</div>
+                    <div class="kpi-value">@Model.InHouseGuests</div>
+                    <div class="kpi-trend neutral">
+                        Currently staying
+                    </div>
+                </div>
+                <div class="kpi-icon kpi-icon-blue">🛏️</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ SECONDARY KPIs ═══════════ -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Arrivals Today</div>
+                    <div class="kpi-value">@Model.TodaysArrivals</div>
+                    <div class="kpi-trend neutral">
+                        Yesterday: @Model.ArrivalsYesterday
+                    </div>
+                </div>
+                <div class="kpi-icon kpi-icon-blue">🟢</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Departures Today</div>
+                    <div class="kpi-value">@Model.TodaysDepartures</div>
+                    <div class="kpi-trend neutral">
+                        Yesterday: @Model.DeparturesYesterday
+                    </div>
+                </div>
+                <div class="kpi-icon kpi-icon-amber">🟡</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Housekeeping Tasks</div>
+                    <div class="kpi-value">@Model.PendingHousekeepingTasks</div>
+                    <div class="kpi-trend neutral">
+                        Pending cleaning
+                    </div>
+                </div>
+                <div class="kpi-icon kpi-icon-purple">🧹</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="kpi-label">Maintenance</div>
+                    <div class="kpi-value">@Model.OpenMaintenanceRequests</div>
+                    <div class="kpi-trend neutral">
+                        Open requests
+                    </div>
+                </div>
+                <div class="kpi-icon kpi-icon-red">🔧</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ ROOM STATUS ═══════════ -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom">
+                <strong>🛏️ Room Status</strong>
+            </div>
+            <div class="card-body">
+                <div class="row text-center g-2">
+                    <div class="col-4">
+                        <div class="p-3 rounded" style="background:#dcfce7;">
+                            <div style="font-size:1.6rem;font-weight:700;color:#15803d;">
+                                @Model.AvailableRooms
+                            </div>
+                            <small style="color:#15803d;">Available</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded" style="background:#fee2e2;">
+                            <div style="font-size:1.6rem;font-weight:700;color:#b91c1c;">
+                                @Model.OccupiedRooms
+                            </div>
+                            <small style="color:#b91c1c;">Occupied</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded" style="background:#fef3c7;">
+                            <div style="font-size:1.6rem;font-weight:700;color:#b45309;">
+                                @Model.ReservedRooms
+                            </div>
+                            <small style="color:#b45309;">Reserved</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded" style="background:#dbeafe;">
+                            <div style="font-size:1.6rem;font-weight:700;color:#1d4ed8;">
+                                @Model.CleaningRooms
+                            </div>
+                            <small style="color:#1d4ed8;">Cleaning</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded" style="background:#f3f4f6;">
+                            <div style="font-size:1.6rem;font-weight:700;color:#4b5563;">
+                                @Model.MaintenanceRooms
+                            </div>
+                            <small style="color:#4b5563;">Maintenance</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 rounded" style="background:#ede9fe;">
+                            <div style="font-size:1.6rem;font-weight:700;color:#6d28d9;">
+                                @Model.TotalRooms
+                            </div>
+                            <small style="color:#6d28d9;">Total</small>
+                        </div>
+                    </div>
+                </div>
+                <a asp-controller="Room" asp-action="Dashboard"
+                   class="btn btn-sm btn-outline-primary w-100 mt-3">
+                    View Room Dashboard →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today at a Glance -->
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom">
+                <strong>🛎️ Today at a Glance</strong>
+            </div>
+            <div class="card-body">
+                <div class="row text-center g-2">
+                    <div class="col-6">
+                        <div class="p-3 rounded" style="background:#dbeafe;">
+                            <div style="font-size:2rem;font-weight:700;color:#1d4ed8;">
+                                @Model.TodaysArrivals
+                            </div>
+                            <small style="color:#1d4ed8;">Arrivals Today</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded" style="background:#fef3c7;">
+                            <div style="font-size:2rem;font-weight:700;color:#b45309;">
+                                @Model.TodaysDepartures
+                            </div>
+                            <small style="color:#b45309;">Departures Today</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded" style="background:#ede9fe;">
+                            <div style="font-size:2rem;font-weight:700;color:#6d28d9;">
+                                @Model.UpcomingReservations
+                            </div>
+                            <small style="color:#6d28d9;">Upcoming</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded" style="background:#dcfce7;">
+                            <div style="font-size:2rem;font-weight:700;color:#15803d;">
+                                @Model.PendingHousekeepingTasks
+                            </div>
+                            <small style="color:#15803d;">Tasks</small>
+                        </div>
+                    </div>
+                </div>
+                <a asp-controller="CheckInOut" asp-action="Index"
+                   class="btn btn-sm btn-outline-primary w-100 mt-3">
+                    Open Front Desk →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ ARRIVALS & DEPARTURES ═══════════ -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                <strong>🟢 Today's Arrivals</strong>
+                <span class="badge rounded-pill" style="background:#dbeafe;color:#1d4ed8;">
+                    @Model.ArrivalsList.Count
+                </span>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.ArrivalsList.Any())
+                {
+                    <partial name="_EmptyState"
+                             model="@(("🟢", "No arrivals today",
+                                       "Upcoming arrivals will appear here on their check-in day.",
+                                       (string?)null, (string?)null))" />
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var a in Model.ArrivalsList)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <a href="@a.LinkUrl" class="text-decoration-none fw-semibold">
+                                        @a.Primary
+                                    </a>
+                                    <br />
+                                    <small class="text-muted">@a.Secondary · Room @a.Tertiary</small>
+                                </div>
+                                <span class="badge" style="background:#dbeafe;color:#1d4ed8;">@a.Badge</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                <strong>🔴 Today's Departures</strong>
+                <span class="badge rounded-pill" style="background:#fef3c7;color:#b45309;">
+                    @Model.DeparturesList.Count
+                </span>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.DeparturesList.Any())
+                {
+                    <partial name="_EmptyState"
+                             model="@(("🔴", "No departures today",
+                                       "Guests checking out today will appear here.",
+                                       (string?)null, (string?)null))" />
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var d in Model.DeparturesList)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <a href="@d.LinkUrl" class="text-decoration-none fw-semibold">
+                                        @d.Primary
+                                    </a>
+                                    <br />
+                                    <small class="text-muted">@d.Secondary · Room @d.Tertiary</small>
+                                </div>
+                                <span class="badge" style="background:#fef3c7;color:#b45309;">@d.Badge</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ RECENT ACTIVITY ═══════════ -->
+<div class="row g-3 mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <strong>📜 Recent Activity</strong>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.RecentActivity.Any())
+                {
+                    <partial name="_EmptyState"
+                             model="@(("📜", "No activity yet",
+                                       "Actions like bookings, check-ins, and payments will be logged here.",
+                                       (string?)null, (string?)null))" />
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var log in Model.RecentActivity)
+                        {
+                            <li class="list-group-item d-flex justify-content-between py-2">
+                                <div>
+                                    <strong class="fw-semibold">@log.Primary</strong>
+                                    @if (!string.IsNullOrEmpty(log.Secondary))
+                                    {
+                                        <br /><small class="text-muted">@log.Secondary</small>
+                                    }
+                                </div>
+                                <small class="text-muted">@log.Tertiary</small>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ QUICK ACTIONS ═══════════ -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <strong>⚡ Quick Actions</strong>
+            </div>
+            <div class="card-body d-flex flex-wrap gap-2">
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("FrontDesk"))
+                {
+                    <a asp-controller="Reservation" asp-action="Create" class="btn btn-primary">
+                        ＋ New Reservation
+                    </a>
+                    <a asp-controller="CheckInOut" asp-action="Index" class="btn btn-outline-primary">
+                        🛎️ Front Desk
+                    </a>
+                }
+                <a asp-controller="Housekeeping" asp-action="Index" class="btn btn-outline-secondary">
+                    🧹 Housekeeping
+                </a>
+                <a asp-controller="Maintenance" asp-action="Create" class="btn btn-outline-secondary">
+                    🔧 Report Issue
+                </a>
+                <a asp-controller="Room" asp-action="Dashboard" class="btn btn-outline-secondary">
+                    🛏️ Room Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

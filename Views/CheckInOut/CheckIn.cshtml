@@ -1,0 +1,87 @@
+﻿@model HotelManagement.Models.ViewModels.CheckInViewModel
+@{
+    ViewData["Title"] = "Check-In";
+}
+
+<h2>✅ Check-In — @Model.BookingReference</h2>
+
+<form asp-action="CheckIn" method="post">
+    <input type="hidden" asp-for="ReservationId" />
+    <input type="hidden" asp-for="BookingReference" />
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header"><strong>Guest</strong></div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Name</dt>
+                        <dd class="col-sm-8">@Model.GuestName</dd>
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">@Model.GuestEmail</dd>
+                        <dt class="col-sm-4">Phone</dt>
+                        <dd class="col-sm-8">@Model.GuestPhone</dd>
+                        <dt class="col-sm-4">ID Proof</dt>
+                        <dd class="col-sm-8">
+                            @Model.GuestIdProofType — @Model.GuestIdProofNumber
+                            @if (string.IsNullOrEmpty(Model.GuestIdProofNumber))
+                            {
+                                <span class="text-warning">(not on file — verify manually)</span>
+                            }
+                        </dd>
+                        <dt class="col-sm-4">Stay</dt>
+                        <dd class="col-sm-8">
+                            @Model.CheckInDate.ToString("dd MMM") → @Model.CheckOutDate.ToString("dd MMM yyyy")
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header"><strong>Rooms to be Assigned</strong></div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <thead class="table-light">
+                            <tr><th>Room</th><th>Type</th><th>Rate</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var room in Model.Rooms)
+                            {
+                                <tr>
+                                    <td><strong>@room.RoomNumber</strong></td>
+                                    <td>@room.Type</td>
+                                    <td>₹@room.NightlyRate.ToString("N0")/night</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="form-check mb-2">
+                <input asp-for="IdVerified" class="form-check-input" />
+                <label asp-for="IdVerified" class="form-check-label"></label>
+                <span asp-validation-for="IdVerified" class="text-danger"></span>
+            </div>
+            <div class="mb-2">
+                <label asp-for="Notes" class="form-label"></label>
+                <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Confirm Check-In</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

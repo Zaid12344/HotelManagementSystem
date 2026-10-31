@@ -1,0 +1,243 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HotelManagement · Staff Portal</title>
+
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            }
+
+            /* ---------- Background ---------- */
+            .landing-bg {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background-image:
+                linear-gradient(135deg, rgba(30, 15, 60, 0.75) 0%, rgba(75, 44, 140, 0.65) 100%),
+                url('/images/hotel-bg.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+            }
+            
+            /* ---------- Content wrapper ---------- */
+            .landing-content {
+                position: relative;
+                z-index: 1;
+                max-width: 760px;
+                width: 100%;
+                text-align: center;
+                color: #fff;
+                animation: fadeInUp 0.6s ease-out;
+            }
+            @@keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(24px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+
+            /* ---------- Hero ---------- */
+            .hero-icon {
+                font-size: 5rem;
+                line-height: 1;
+                margin-bottom: 12px;
+                filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.25));
+            }
+            .hero-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+            .hero-subtitle {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 8px;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}
+            .hero-note {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.78);
+    margin-bottom: 32px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+            /* ---------- Buttons ---------- */
+            .landing-actions {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-bottom: 48px;
+            }
+            .btn-landing-primary {
+                background: #fff;
+                color: #4b2c8c;
+                border: none;
+                border-radius: 12px;
+                padding: 14px 32px;
+                font-size: 1rem;
+                font-weight: 600;
+                text-decoration: none;
+                transition: transform 0.15s, box-shadow 0.2s;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            }
+            .btn-landing-primary:hover {
+                color: #4b2c8c;
+                transform: translateY(-2px);
+                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+            }
+            .btn-landing-secondary {
+                background: rgba(255, 255, 255, 0.12);
+                color: #fff;
+                border: 1.5px solid rgba(255, 255, 255, 0.4);
+                border-radius: 12px;
+                padding: 14px 32px;
+                font-size: 1rem;
+                font-weight: 600;
+                text-decoration: none;
+                backdrop-filter: blur(6px);
+                transition: background 0.15s, transform 0.15s;
+            }
+            .btn-landing-secondary:hover {
+                background: rgba(255, 255, 255, 0.22);
+                color: #fff;
+                transform: translateY(-2px);
+            }
+
+            /* ---------- Features ---------- */
+            .feature-divider {
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                color: rgba(255, 255, 255, 0.55);
+                margin-bottom: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+            }
+            .feature-divider::before,
+            .feature-divider::after {
+                content: '';
+                height: 1px;
+                width: 60px;
+                background: rgba(255, 255, 255, 0.25);
+            }
+
+            .feature-grid {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 12px;
+            }
+            @@media (max-width: 720px) {
+                .feature-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+
+            .feature-tile {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 12px;
+                padding: 18px 8px;
+                text-align: center;
+                backdrop-filter: blur(6px);
+                transition: background 0.15s, transform 0.15s;
+            }
+            .feature-tile:hover {
+                background: rgba(255, 255, 255, 0.18);
+                transform: translateY(-2px);
+            }
+            .feature-icon {
+                font-size: 1.8rem;
+                display: block;
+                margin-bottom: 6px;
+            }
+            .feature-label {
+                font-size: 0.8rem;
+                font-weight: 500;
+                color: rgba(255, 255, 255, 0.95);
+            }
+
+            /* ---------- Footer ---------- */
+            .landing-footer {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                text-align: center;
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 0.82rem;
+                padding: 16px;
+            }
+    </style>
+</head>
+<body>
+    <div class="landing-bg">
+        <div class="landing-content">
+
+            <!-- Hero -->
+            <div class="hero-icon">🏨</div>
+            <h1 class="hero-title">HotelManagement</h1>
+            <p class="hero-subtitle">Staff &amp; Administrator Portal</p>
+            <p class="hero-note">Internal system for hotel operations</p>
+
+            <!-- Actions -->
+            <div class="landing-actions">
+                <a asp-controller="Account" asp-action="Login" class="btn-landing-primary">
+                    🔐 Staff Login
+                </a>
+                <a asp-controller="Home" asp-action="About" class="btn-landing-secondary">
+                    📖 About Us
+                </a>
+            </div>
+
+            <!-- Features -->
+            <div class="feature-divider">What's Inside</div>
+            <div class="feature-grid">
+                <div class="feature-tile">
+                    <span class="feature-icon">🛏️</span>
+                    <div class="feature-label">Rooms</div>
+                </div>
+                <div class="feature-tile">
+                    <span class="feature-icon">📅</span>
+                    <div class="feature-label">Reservations</div>
+                </div>
+                <div class="feature-tile">
+                    <span class="feature-icon">✅</span>
+                    <div class="feature-label">Check-In / Out</div>
+                </div>
+                <div class="feature-tile">
+                    <span class="feature-icon">🛎️</span>
+                    <div class="feature-label">Services</div>
+                </div>
+                <div class="feature-tile">
+                    <span class="feature-icon">📬</span>
+                    <div class="feature-label">Notifications</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="landing-footer">
+            © @DateTime.Now.Year HotelManagement · Internal Staff Portal
+        </div>
+    </div>
+</body>
+</html>

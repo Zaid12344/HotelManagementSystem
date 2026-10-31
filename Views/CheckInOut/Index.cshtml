@@ -1,0 +1,158 @@
+﻿@model HotelManagement.Models.ViewModels.CheckInOutDashboardViewModel
+@{
+    ViewData["Title"] = "Front Desk";
+}
+@using HotelManagement.Models.Helpers
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<h2 class="mb-3">🛎️ Front Desk — Check-In / Check-Out</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h6>Today's Arrivals</h6>
+                <h2>@Model.ArrivalsCount</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning text-dark">
+            <div class="card-body">
+                <h6>Today's Departures</h6>
+                <h2>@Model.DeparturesCount</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h6>Currently In-House</h6>
+                <h2>@Model.InHouseCount</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header"><strong>Today's Arrivals</strong></div>
+    <div class="card-body p-0">
+        @if (!Model.TodaysArrivals.Any())
+        {
+            <div class="p-3 text-muted">No arrivals scheduled for today.</div>
+        }
+        else
+        {
+            <table class="table mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Ref</th>
+                        <th>Guest</th>
+                        <th>Rooms</th>
+                        <th>Check-Out</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.TodaysArrivals)
+                    {
+                        <tr>
+                            <td><strong>@r.BookingReference</strong></td>
+                            <td>@r.GuestName<br /><small class="text-muted">@r.GuestPhone</small></td>
+                            <td>@r.RoomsText</td>
+                            <td>@r.CheckOutDate.ToString("dd MMM yyyy")</td>
+                            <td><span class="@BadgeHelper.ReservationStatus(r.Status)">@r.Status</span></td>
+                            <td class="text-end">
+                                <a asp-action="CheckIn" asp-route-id="@r.Id" class="btn btn-sm btn-success">Check In</a>
+                                <form asp-action="ExpressCheckIn" method="post" class="d-inline"
+                                      onsubmit="return confirm('Express check-in — ID already verified?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="reservationId" value="@r.Id" />
+                                    <button class="btn btn-sm btn-outline-success">Express</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header"><strong>Today's Departures</strong></div>
+    <div class="card-body p-0">
+        @if (!Model.TodaysDepartures.Any())
+        {
+            <div class="p-3 text-muted">No departures scheduled for today.</div>
+        }
+        else
+        {
+            <table class="table mb-0">
+                <thead class="table-light">
+                    <tr><th>Ref</th><th>Guest</th><th>Rooms</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.TodaysDepartures)
+                    {
+                        <tr>
+                            <td><strong>@r.BookingReference</strong></td>
+                            <td>@r.GuestName<br /><small class="text-muted">@r.GuestPhone</small></td>
+                            <td>@r.RoomsText</td>
+                            <td class="text-end">
+                                <a asp-action="CheckOut" asp-route-id="@r.Id" class="btn btn-sm btn-warning">Check Out</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header"><strong>Currently In-House</strong></div>
+    <div class="card-body p-0">
+        @if (!Model.InHouse.Any())
+        {
+            <div class="p-3 text-muted">No guests currently in-house.</div>
+        }
+        else
+        {
+            <table class="table mb-0">
+                <thead class="table-light">
+                    <tr><th>Ref</th><th>Guest</th><th>Rooms</th><th>Check-Out</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.InHouse)
+                    {
+                        <tr>
+                            <td><strong>@r.BookingReference</strong></td>
+                            <td>@r.GuestName<br /><small class="text-muted">@r.GuestPhone</small></td>
+                            <td>@r.RoomsText</td>
+                            <td>@r.CheckOutDate.ToString("dd MMM yyyy")</td>
+                            <td class="text-end">
+                                <a asp-action="CheckOut" asp-route-id="@r.Id" class="btn btn-sm btn-warning">Check Out</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

@@ -1,0 +1,43 @@
+﻿@model HotelManagement.Models.ViewModels.MaintenanceFormViewModel
+@{
+    ViewData["Title"] = "Report Issue";
+}
+
+<h2>🔧 Report Maintenance Issue</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="RoomId" class="form-label"></label>
+                <select asp-for="RoomId" asp-items="Model.Rooms" class="form-select">
+                    <option value="">-- Select Room --</option>
+                </select>
+                <span asp-validation-for="RoomId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" placeholder="e.g. AC not cooling" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Priority" class="form-label"></label>
+                <select asp-for="Priority" asp-items="Html.GetEnumSelectList<HotelManagement.Models.Enums.MaintenancePriority>()" class="form-select"></select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Report</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,51 @@
+﻿@model HotelManagement.Models.ViewModels.SplitBillingViewModel
+@{
+    ViewData["Title"] = "Split Billing";
+}
+
+<h2>🪓 Split Billing — @Model.FolioNumber</h2>
+
+<div class="card mb-3" style="max-width:600px;">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-6">Total Charges</dt>
+            <dd class="col-sm-6">₹@Model.TotalCharges.ToString("N2")</dd>
+            <dt class="col-sm-6">Already Paid</dt>
+            <dd class="col-sm-6">₹@Model.AlreadyPaid.ToString("N2")</dd>
+            <dt class="col-sm-6 fw-bold">Balance to Split</dt>
+            <dd class="col-sm-6 fw-bold text-danger">₹@Model.Balance.ToString("N2")</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="RecordSplit" method="post" style="max-width:600px;">
+    <input type="hidden" asp-for="FolioId" />
+    <input type="hidden" asp-for="FolioNumber" />
+    <input type="hidden" asp-for="TotalCharges" />
+    <input type="hidden" asp-for="AlreadyPaid" />
+    <input type="hidden" asp-for="Balance" />
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Parts" class="form-label"></label>
+        <input asp-for="Parts" class="form-control" id="parts" />
+        <span asp-validation-for="Parts" class="text-danger"></span>
+    </div>
+
+    <div class="alert alert-info">
+        Each of the <strong>@Model.Parts</strong> parts will be recorded as a separate Cash payment of approximately
+        <strong>₹@Model.PerPart.ToString("N2")</strong>.
+    </div>
+
+    <button type="submit" class="btn btn-primary">Record Split Payments</button>
+    <a asp-controller="CheckInOut" asp-action="Folio" asp-route-id="@Model.FolioId"
+       class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('parts').addEventListener('input', () => location.reload());
+    </script>
+}

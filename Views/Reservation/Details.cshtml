@@ -1,0 +1,139 @@
+﻿@model HotelManagement.Models.ViewModels.ReservationDetailsViewModel
+@using HotelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Reservation Details";
+}
+@using HotelManagement.Models.Helpers
+
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📄 Booking @Model.BookingReference</h2>
+    <div>
+        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("FrontDesk"))
+        {
+            @if (Model.Status == ReservationStatus.Confirmed || Model.Status == ReservationStatus.Pending)
+            {
+                <a asp-controller="CheckInOut" asp-action="CheckIn" asp-route-id="@Model.Id"
+                   class="btn btn-success">✅ Check In</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit</a>
+                <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" class="d-inline"
+                      onsubmit="return confirm('Cancel this reservation?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger">Cancel</button>
+                </form>
+            }
+            else if (Model.Status == ReservationStatus.CheckedIn)
+            {
+                <a asp-controller="CheckInOut" asp-action="CheckOut" asp-route-id="@Model.Id"
+                   class="btn btn-warning">🏁 Check Out</a>
+                <a asp-controller="Service" asp-action="PostToFolio" asp-route-id="@Model.Id"
+                   class="btn btn-info">🛎️ Post Service</a>
+            }
+        }
+        <a asp-action="Index" class="btn btn-secondary">Back</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header"><strong>Guest</strong></div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">@Model.GuestName</dd>
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.GuestEmail</dd>
+                    <dt class="col-sm-4">Phone</dt>
+                    <dd class="col-sm-8">@Model.GuestPhone</dd>
+                    @if (!string.IsNullOrEmpty(Model.GuestAddress))
+                    {
+                        <dt class="col-sm-4">Address</dt>
+                        <dd class="col-sm-8">@Model.GuestAddress</dd>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.GuestIdProofNumber))
+                    {
+                        <dt class="col-sm-4">ID Proof</dt>
+                        <dd class="col-sm-8">@Model.GuestIdProofType — @Model.GuestIdProofNumber</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header"><strong>Stay</strong></div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Check-In</dt>
+                    <dd class="col-sm-8">@Model.CheckInDate.ToString("dd MMM yyyy")</dd>
+                    <dt class="col-sm-4">Check-Out</dt>
+                    <dd class="col-sm-8">@Model.CheckOutDate.ToString("dd MMM yyyy")</dd>
+                    <dt class="col-sm-4">Nights</dt>
+                    <dd class="col-sm-8">@Model.Nights</dd>
+                    <dt class="col-sm-4">Guests</dt>
+                    <dd class="col-sm-8">@Model.Adults adult(s), @Model.Children child(ren)</dd>
+                    <dt class="col-sm-4">Source</dt>
+                    <dd class="col-sm-8">@Model.Source</dd>
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8"><span class="@BadgeHelper.ReservationStatus(Model.Status)">@Model.Status</span></dd>
+                    @if (!string.IsNullOrEmpty(Model.GroupName))
+                    {
+                        <dt class="col-sm-4">Group</dt>
+                        <dd class="col-sm-8">@Model.GroupName</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header"><strong>Rooms</strong></div>
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Room</th>
+                    <th>Type</th>
+                    <th>Nightly Rate</th>
+                    <th class="text-end">Line Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var line in Model.Rooms)
+                {
+                    <tr>
+                        <td><strong>@line.RoomNumber</strong></td>
+                        <td>@line.Type</td>
+                        <td>₹@line.NightlyRate.ToString("N0")</td>
+                        <td class="text-end">₹@line.LineTotal.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" class="text-end">Total</th>
+                    <th class="text-end">₹@Model.TotalAmount.ToString("N0")</th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-end">Deposit Paid</th>
+                    <th class="text-end">₹@Model.DepositAmount.ToString("N0")</th>
+                </tr>
+                <tr class="table-warning">
+                    <th colspan="3" class="text-end">Balance Due</th>
+                    <th class="text-end">₹@Model.BalanceDue.ToString("N0")</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Notes))
+{
+    <div class="card mb-3">
+        <div class="card-header"><strong>Notes</strong></div>
+        <div class="card-body">@Model.Notes</div>
+    </div>
+}

@@ -1,0 +1,241 @@
+﻿@model HotelManagement.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login · HotelManagement</title>
+
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preload" as="image" href="~/images/hotel-bg.jpg" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* ---------- Background gradient ---------- */
+        .login-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-image:
+        linear-gradient(135deg, rgba(30, 15, 60, 0.75) 0%, rgba(75, 44, 140, 0.65) 100%),
+        url('/images/hotel-bg.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+}
+
+        
+        /* ---------- Glass card ---------- */
+        .login-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 18px;
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.3),
+        0 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 40px 32px 32px;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+        @@keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---------- Branding ---------- */
+        .brand-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .brand-title {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #2d1b4e;
+    margin-bottom: 4px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+        .brand-subtitle {
+            text-align: center;
+            color: #7b7b8b;
+            font-size: 0.9rem;
+            margin-bottom: 28px;
+        }
+
+        /* ---------- Form inputs ---------- */
+        .form-label {
+            font-weight: 500;
+            font-size: 0.88rem;
+            color: #4b4b5a;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            border: 1.5px solid #e1e1e8;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 0.95rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .form-control:focus {
+            border-color: #6a4bb5;
+            box-shadow: 0 0 0 4px rgba(106, 75, 181, 0.12);
+            outline: none;
+        }
+
+        .form-check-input:checked {
+            background-color: #6a4bb5;
+            border-color: #6a4bb5;
+        }
+
+        /* ---------- Primary button ---------- */
+        .btn-login {
+            background: linear-gradient(135deg, #5a3fa3 0%, #7a5cc9 100%);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            padding: 12px;
+            width: 100%;
+            font-size: 1rem;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .btn-login:hover {
+            box-shadow: 0 8px 20px rgba(106, 75, 181, 0.35);
+            transform: translateY(-1px);
+            color: #fff;
+        }
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* ---------- Validation ---------- */
+        .validation-summary-errors {
+            background: #fdecec;
+            border-left: 4px solid #d9534f;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            color: #a02020;
+            margin-bottom: 20px;
+        }
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .field-validation-error {
+            color: #a02020;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* ---------- Footer ---------- */
+        .login-footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.82rem;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---------- Demo hint ---------- */
+        .demo-hint {
+            background: #f4f0fc;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            color: #5a3fa3;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .demo-hint code {
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #5a3fa3;
+            font-size: 0.78rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-bg">
+        
+        <div class="login-card">
+            <div class=" mb-3">
+                <a asp-controller="Home" asp-action="Landing"
+                   style="color:#6a4bb5;font-size:0.85rem;text-decoration:none;">
+                    ← Back to Home
+                </a>
+            </div>
+            <div class="brand-icon">🏨</div>
+            <h1 class="brand-title">HotelManagement</h1>
+            <p class="brand-subtitle">Sign in to continue</p>
+            
+            <form asp-action="Login" method="post">
+                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">📧 Email</label>
+                    <input asp-for="Email" class="form-control"
+                           placeholder="you@hotel.com" autocomplete="username" autofocus />
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">🔒 Password</label>
+                    <input asp-for="Password" class="form-control"
+                           placeholder="Enter your password" autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="field-validation-error"></span>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label" style="font-size:0.9rem;">
+                        Remember me
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-login">Sign In</button>
+
+                
+            </form>
+
+        </div>
+
+        <p class="login-footer position-absolute bottom-0 start-50 translate-middle-x mb-3">
+            © @DateTime.Now.Year HotelManagement · All rights reserved
+        </p>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

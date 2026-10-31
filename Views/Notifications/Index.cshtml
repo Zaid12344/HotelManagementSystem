@@ -1,0 +1,87 @@
+﻿@model List<HotelManagement.Models.ViewModels.NotificationListViewModel>
+@using HotelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Notifications";
+    var filter = ViewBag.Filter as string ?? "all";
+}
+@using HotelManagement.Models.Helpers
+
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📬 Notifications</h2>
+    <form asp-action="RunDailyJobs" method="post"
+          onsubmit="return confirm('Run daily jobs? This sends reminders and checks alerts.');">
+        @Html.AntiForgeryToken()
+        <button class="btn btn-primary">▶ Run Daily Jobs</button>
+    </form>
+</div>
+
+<partial name="_Alerts" />
+
+<ul class="nav nav-pills mb-3">
+    @foreach (var f in new[] { "all", "today", "failed", "alerts" })
+    {
+        var label = f switch
+        {
+            "today" => "Today",
+            "failed" => "Failed",
+            "alerts" => "System Alerts",
+            _ => "All"
+        };
+        <li class="nav-item">
+            <a class="nav-link @(filter == f ? "active" : "")"
+               asp-action="Index" asp-route-filter="@f">@label</a>
+        </li>
+    }
+</ul>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="card-body">
+            <partial name="_EmptyState"
+                     model="@((
+                         "📬",
+                         "No notifications yet",
+                         filter == "all"
+                             ? "Notifications for bookings, payments, and alerts will appear here."
+                             : "No notifications match this filter.",
+                         "▶ Run Daily Jobs",
+                         (string?)null
+                     ))" />
+        </div>
+    </div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>When</th>
+                <th>Type</th>
+                <th>Channel</th>
+                <th>Recipient</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var n in Model)
+            {
+                <tr>
+                    <td>@n.CreatedAt.ToString("dd MMM HH:mm")</td>
+                    <td><small>@n.Type</small></td>
+                    <td>@n.Channel</td>
+                    <td><small>@n.Recipient</small></td>
+                    <td>@n.Subject</td>
+                    <span class="@BadgeHelper.NotificationStatus(n.Status)">@n.Status</span>
+                    <td class="text-end">
+                        <a asp-action="Details" asp-route-id="@n.Id"
+                           class="btn btn-sm btn-outline-secondary">View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

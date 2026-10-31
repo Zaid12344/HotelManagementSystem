@@ -1,0 +1,213 @@
+﻿@model HotelManagement.Models.ViewModels.ReservationFormViewModel
+@{
+    ViewData["Title"] = "New Reservation";
+}
+
+<h2>➕ New Reservation</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header"><strong>Guest Details</strong></div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label asp-for="GuestFullName" class="form-label"></label>
+                        <input asp-for="GuestFullName" class="form-control" />
+                        <span asp-validation-for="GuestFullName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="GuestEmail" class="form-label"></label>
+                        <input asp-for="GuestEmail" class="form-control" />
+                        <span asp-validation-for="GuestEmail" class="text-danger"></span>
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="GuestPhone" class="form-label"></label>
+                        <input asp-for="GuestPhone" class="form-control" />
+                        <span asp-validation-for="GuestPhone" class="text-danger"></span>
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="GuestAddress" class="form-label"></label>
+                        <input asp-for="GuestAddress" class="form-control" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="GuestIdProofType" class="form-label"></label>
+                            <input asp-for="GuestIdProofType" class="form-control"
+                                   placeholder="Aadhaar / Passport" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="GuestIdProofNumber" class="form-label"></label>
+                            <input asp-for="GuestIdProofNumber" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header"><strong>Stay Details</strong></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="CheckInDate" class="form-label"></label>
+                            <input asp-for="CheckInDate" type="date" class="form-control" id="checkIn" />
+                            <span asp-validation-for="CheckInDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="CheckOutDate" class="form-label"></label>
+                            <input asp-for="CheckOutDate" type="date" class="form-control" id="checkOut" />
+                            <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Adults" class="form-label"></label>
+                            <input asp-for="Adults" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Children" class="form-label"></label>
+                            <input asp-for="Children" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Source" class="form-label"></label>
+                            <select asp-for="Source" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<HotelManagement.Models.Enums.BookingSource>()"></select>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<HotelManagement.Models.Enums.ReservationStatus>()"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="DepositAmount" class="form-label"></label>
+                            <input asp-for="DepositAmount" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="GroupName" class="form-label"></label>
+                            <input asp-for="GroupName" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label asp-for="Notes" class="form-label"></label>
+                        <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>Available Rooms</strong>
+            <button type="button" class="btn btn-sm btn-outline-primary" id="refreshRooms">🔄 Refresh</button>
+        </div>
+        <div class="card-body">
+            <span asp-validation-for="SelectedRoomIds" class="text-danger"></span>
+            @* Skeleton loading placeholders — hidden by default *@
+<div id="roomSkeleton" class="row" style="display: none;">
+    @for (int i = 0; i < 8; i++)
+    {
+        <div class="col-md-3 mb-2">
+            <div class="skeleton-card"></div>
+        </div>
+    }
+</div>
+    <div id="roomList" class="row">
+                @foreach (var room in Model.AvailableRooms)
+                {
+                    <div class="col-md-3 mb-2">
+                        <div class="form-check border rounded p-2 @(room.IsSelected ? "bg-light" : "")">
+                            <input class="form-check-input" type="checkbox"
+                                   name="SelectedRoomIds" value="@room.RoomId"
+                                   id="room_@room.RoomId" @(room.IsSelected ? "checked" : "") />
+                            <label class="form-check-label" for="room_@room.RoomId">
+                                <strong>@room.RoomNumber</strong> — @room.Type<br />
+                                <small>Floor @room.Floor · ₹@room.Rate.ToString("N0")/night</small>
+                            </label>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (!Model.AvailableRooms.Any())
+            {
+                <div class="alert alert-warning mb-0">No rooms available for selected dates.</div>
+            }
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Reservation</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const skeleton = document.getElementById('roomSkeleton');
+        const roomList = document.getElementById('roomList');
+
+        function showSkeleton() {
+            skeleton.style.display = 'flex';
+            roomList.style.display = 'none';
+        }
+
+        function hideSkeleton() {
+            skeleton.style.display = 'none';
+            roomList.style.display = 'flex';
+        }
+
+        async function refreshRooms() {
+            const ci = document.getElementById('checkIn').value;
+            const co = document.getElementById('checkOut').value;
+            if (!ci || !co) return;
+
+            showSkeleton();
+
+            try {
+                const res = await fetch(`/Reservation/AvailableRooms?checkIn=${ci}&checkOut=${co}`);
+                const data = await res.json();
+
+                roomList.innerHTML = '';
+
+                if (!data.rooms.length) {
+                    roomList.innerHTML = `
+                        <div class="alert alert-warning mb-0 w-100">
+                            No rooms available for the selected dates.
+                        </div>`;
+                } else {
+                    data.rooms.forEach(r => {
+                        roomList.insertAdjacentHTML('beforeend', `
+                            <div class="col-md-3 mb-2">
+                                <div class="form-check border rounded p-2">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="SelectedRoomIds" value="${r.id}" id="room_${r.id}" />
+                                    <label class="form-check-label" for="room_${r.id}">
+                                        <strong>${r.roomNumber}</strong> — ${r.type}<br />
+                                        <small>Floor ${r.floor} · ₹${r.rate.toLocaleString()}/night</small>
+                                    </label>
+                                </div>
+                            </div>`);
+                    });
+                }
+            } catch (err) {
+                roomList.innerHTML = `
+                    <div class="alert alert-danger mb-0 w-100">
+                        Could not load rooms. Please try again.
+                    </div>`;
+            } finally {
+                hideSkeleton();
+            }
+        }
+
+        document.getElementById('refreshRooms').addEventListener('click', refreshRooms);
+        document.getElementById('checkIn').addEventListener('change', refreshRooms);
+        document.getElementById('checkOut').addEventListener('change', refreshRooms);
+    </script>
+}

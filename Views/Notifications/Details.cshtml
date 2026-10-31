@@ -1,0 +1,38 @@
+﻿@model HotelManagement.Models.Entities.Notification
+@{ ViewData["Title"] = "Notification Details"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📬 Notification #@Model.Id</h2>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Type</dt><dd class="col-sm-9">@Model.Type</dd>
+            <dt class="col-sm-3">Channel</dt><dd class="col-sm-9">@Model.Channel</dd>
+            <dt class="col-sm-3">Status</dt><dd class="col-sm-9">@Model.Status</dd>
+            <dt class="col-sm-3">Recipient</dt><dd class="col-sm-9">@Model.Recipient</dd>
+            <dt class="col-sm-3">Subject</dt><dd class="col-sm-9">@Model.Subject</dd>
+            <dt class="col-sm-3">Created</dt>
+            <dd class="col-sm-9">@Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</dd>
+            @if (Model.SentAt.HasValue)
+            {
+                <dt class="col-sm-3">Sent</dt>
+                <dd class="col-sm-9">@Model.SentAt.Value.ToString("dd MMM yyyy HH:mm")</dd>
+            }
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <dt class="col-sm-3">Note</dt>
+                <dd class="col-sm-9 text-muted">@Model.ErrorMessage</dd>
+            }
+        </dl>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><strong>Body</strong></div>
+    <div class="card-body">
+        @Html.Raw(Model.Body)
+    </div>
+</div>

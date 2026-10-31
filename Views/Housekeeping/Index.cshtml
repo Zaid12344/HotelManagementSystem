@@ -1,0 +1,146 @@
+﻿@model HotelManagement.Models.ViewModels.HousekeepingDashboardViewModel
+@using HotelManagement.Models.Enums
+@{
+    ViewData["Title"] = "Housekeeping";
+}
+@using HotelManagement.Models.Helpers
+<partial name="_Alerts" />
+
+<h2 class="mb-3">🧹 Housekeeping Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h6>My Open Tasks</h6>
+                <h2>@Model.MyTasks.Count</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning text-dark">
+            <div class="card-body">
+                <h6>All Pending</h6>
+                <h2>@Model.AllPending.Count</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h6>Completed Today</h6>
+                <h2>@Model.CompletedToday.Count</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.MyTasks.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header"><strong>My Tasks</strong></div>
+        <div class="card-body p-0">
+            <table class="table mb-0">
+                <thead class="table-light">
+                    <tr><th>Room</th><th>Type</th><th>Notes</th><th>Since</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.MyTasks)
+                    {
+                        <tr>
+                            <td><strong>@t.RoomNumber</strong> <small class="text-muted">(Floor @t.Floor)</small></td>
+                            <td>@t.TaskType</td>
+                            <td>@t.Notes</td>
+                            <td>@t.CreatedAt.ToString("dd MMM HH:mm")</td>
+                            <td class="text-end">
+                                <form asp-action="Complete" asp-route-id="@t.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="text" name="notes" class="form-control form-control-sm d-inline-block"
+                                           style="width:180px" placeholder="Optional notes" />
+                                    <button class="btn btn-sm btn-success">✔ Complete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-header"><strong>All Pending Tasks</strong></div>
+    <div class="card-body p-0">
+        @if (!Model.AllPending.Any())
+        {
+              <partial name="_EmptyState"
+                     model="@((
+                         "✅",
+                         "All clean!",
+                         "There are no pending housekeeping tasks at the moment.",
+                         (string?)null,
+                         (string?)null
+                     ))" />
+        }
+        else
+        {
+            <table class="table mb-0">
+                <thead class="table-light">
+                    <tr><th>Room</th><th>Type</th><th>Assigned</th><th>Status</th><th>Created</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.AllPending)
+                    {
+                        <tr>
+                            <td><strong>@t.RoomNumber</strong> <small class="text-muted">(F@t.Floor)</small></td>
+                            <td>@t.TaskType</td>
+                            <td>@(t.AssignedToName ?? "—")</td>
+                            <td>
+                                <span class="@BadgeHelper.HousekeepingTask(t.Status)">@t.Status</span>
+                            </td>
+                            <td>@t.CreatedAt.ToString("dd MMM HH:mm")</td>
+                            <td class="text-end">
+                                @if (t.AssignedToUserId == null)
+                                {
+                                    <form asp-action="Claim" asp-route-id="@t.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button class="btn btn-sm btn-outline-primary">Claim</button>
+                                    </form>
+                                }
+                                <form asp-action="Complete" asp-route-id="@t.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-sm btn-success">✔</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@if (Model.CompletedToday.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header"><strong>Completed Today</strong></div>
+        <div class="card-body p-0">
+            <table class="table mb-0">
+                <thead class="table-light">
+                    <tr><th>Room</th><th>Type</th><th>Completed</th><th>By</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.CompletedToday)
+                    {
+                        <tr>
+                            <td><strong>@t.RoomNumber</strong></td>
+                            <td>@t.TaskType</td>
+                            <td>@t.CompletedAt?.ToString("HH:mm")</td>
+                            <td>@t.AssignedToName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
